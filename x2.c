@@ -5,6 +5,7 @@
 
 int equation_solver (int a, int b, int c, int *root_value, int *root_value2);
 int linear_equation_solver (int b, int c, int *root_value);
+int read_number (int max, int min);
 
 int main(){
 	int again = 1;
@@ -12,25 +13,13 @@ int main(){
 		printf("a,b,c долны быть числами от %d до %d\n", MIN, MAX);
 		printf("введите значение a:\n");
 		int a;
-		scanf("%d", &a);
-		if (a < MIN || a > MAX){
-			printf("не верное значение \"a\"\n");
-			continue;
-		}
+		a = read_number(MAX, MIN);
 		printf("введите значение b:\n");
 		int b;
-		scanf("%d", &b);
-		if (b < MIN || b > MAX){
-			printf ("не верное значение \"b\"\n");
-			continue;
-		}
+		b = read_number(MAX, MIN);
 		printf("введите значение c:\n");
 		int c;
-		scanf("%d", &c);
-		if (c < MIN || c > MAX){
-			printf ("не верное значение \"c\"\n");
-			continue;
-		}
+		c = read_number(MAX, MIN);
 		int root_value, answer;
 		if (a == 0){
 			answer = linear_equation_solver (b, c, &root_value);
@@ -54,8 +43,13 @@ int main(){
 		while(1){
 			printf("0 - выход\n"
 						 "1 - попробовать снова\n");
-			scanf("%d", &again);
-			if (again != 0 && again != 1)
+			int error;
+			error = scanf("%d", &again);
+			if (error == 0 || error == EOF){
+				while ((again = getchar()) != '\n');
+				printf("ошибка ввода, попробуйте снова\n");
+			}
+			else if (again != 0 && again != 1)
 				printf("ошибка ввода, попробуйте еще раз\n");
 			else
 				break;
@@ -86,4 +80,21 @@ int equation_solver (int a, int b, int c, int *root_value, int *root_value2){
 		return 2;
 	if(D > 0)
 		return 3;
+}
+
+int read_number(int max, int min){
+	int number, error = 0;
+	while (error != 1){
+		error = scanf("%d", &number);
+		if (error == 0 || error == EOF){
+			printf ("ошибка ввода, попробуйте снова\n");
+			while ((number = getchar()) != '\n');
+			continue;
+		}
+		if (number < min || number > max){
+			printf ("не верное значение, попробуйте снова\n");
+			continue;
+		}
+	}
+return number;
 }
