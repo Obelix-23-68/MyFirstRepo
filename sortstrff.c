@@ -39,9 +39,15 @@ int main(int argc, char *argv[]){
 	}
 	strings = (char **)realloc(strings, strcount * sizeof(char*));
 	fclose(fsource);
-//запись в файл оригинала
+//копия для вставки в конец файла изначального варианта строк
+	char **stringscopy = (char**)malloc(strcount * sizeof(char*));
+	for (int i = 0; i < strcount; i++)
+		stringscopy[i] = strings[i];
+// сортировка с начала
 	FILE *fdestination = fopen("outfile.txt", "w");
-	for (int i = 0; i < strcount; i++){
+	qsort(strings, strcount, sizeof(char*), compare_str);
+//запись сортировки с начала
+	for(int i = 0; i < strcount; i++){
 		fputs(strings[i], fdestination);
 		fputc('\n', fdestination);
 	}
@@ -59,18 +65,14 @@ int main(int argc, char *argv[]){
 			i++;
 	}*/
 	qsort(strings, strcount, sizeof(char*), compare_str_re);
-//запись сортировки наоборот в начало файла
-	rewind(fdestination);
+//запись сортировки с конца
 	for (int i = 0; i < strcount; i++){
 		fputs(strings[i], fdestination);
 		fputc('\n', fdestination);
 	}
-// сортировка с начала
-	qsort(strings, strcount, sizeof(char*), compare_str);
-//запись сортировки с начала в начало файла
-	rewind(fdestination);
-	for(int i = 0; i < strcount; i++){
-		fputs(strings[i], fdestination);
+//запись в файл оригинала
+	for (int i = 0; i < strcount; i++){
+		fputs(stringscopy[i], fdestination);
 		fputc('\n', fdestination);
 	}
 	fclose(fdestination);
